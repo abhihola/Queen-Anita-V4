@@ -7,12 +7,12 @@ const { exec } = require('child_process');
 
 const app = express();
 const port = 3000;
-const envPath = path.join(__dirname, 'config.env');
+const envPath = path.join(__dirname, '.env');
 
-// Load environment variables from config.env
+// Load environment variables from .env
 dotenv.config({ path: envPath });
 
-// Utility function to read config.env and parse it into an object
+// Utility function to read .env and parse it into an object
 function readEnv() {
   let envConfig = {};
   try {
@@ -34,12 +34,12 @@ function readEnv() {
       }
     }
   } catch (err) {
-    console.error('Error reading config.env:', err);
+    console.error('Error reading .env:', err);
   }
   return envConfig;
 }
 
-// Utility function to write an object back to config.env
+// Utility function to write an object back to .env
 function writeEnv(envObj) {
   let content = '';
   for (const key in envObj) {
@@ -60,7 +60,7 @@ app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'septorch.html'));
 });
 
-// GET /api/settings: Returns current configuration from config.env
+// GET /api/settings: Returns current configuration from .env
 app.get('/api/settings', (req, res) => {
   try {
     const config = readEnv();
@@ -70,7 +70,7 @@ app.get('/api/settings', (req, res) => {
   }
 });
 
-// POST /api/settings: Update configuration in config.env
+// POST /api/settings: Update configuration in .env
 app.post('/api/settings', (req, res) => {
   try {
     const newSettings = req.body;
@@ -78,12 +78,22 @@ app.post('/api/settings', (req, res) => {
     // Update keys with new values
     for (const key in newSettings) {
       if (newSettings.hasOwnProperty(key)) {
-        // For example, if key is SESSION_ID, you might want to append the new value.
-        // In this example, we'll simply replace the value.
-        currentConfig[key] = newSettings[key];
+        // Special handling for SESSION_ID: Append new value with ;_;
+        if (key === 'SESSION_ID') {
+          if (currentConfig[key]) {
+            // If new value isn't already part of the string, append it
+            if (!currentConfig[key].includes(newSettings[key])) {
+              currentConfig[key] = currentConfig[key] + ";_;" + newSettings[key];
+            }
+          } else {
+            currentConfig[key] = newSettings[key];
+          }
+        } else {
+          currentConfig[key] = newSettings[key];
+        }
       }
     }
-    // Write the updated configuration back to config.env
+    // Write the updated configuration back to .env
     writeEnv(currentConfig);
     res.json({ message: 'Settings updated and applied!' });
   } catch (error) {
@@ -109,7 +119,7 @@ app.post('/api/reset-settings', (req, res) => {
   }
 });
 
-// (Optional) POST /api/deploy: Uncomment if you wish to deploy via command
+// (Optional) POST /api/deploy: Run "npm start" on the server
 // app.post('/api/deploy', (req, res) => {
 //   exec('npm start', (error, stdout, stderr) => {
 //     if (error) {
