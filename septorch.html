@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WHATS BOT | SEPTORCH</title>
+  <meta name="description" content="WHATS BOT | SEPTORCH" />
+  <meta property="og:title" content="WHATS BOT | SEPTORCH" />
+  <meta property="og:description" content="Hey Dude, WHATS BOT is Active and Running" />
+  <meta property="og:image" content="https://files.catbox.moe/mdeuf8.jpeg" />
+  <link rel="icon" href="https://files.catbox.moe/mdeuf8.jpeg" />
+  <!-- Redirect to port 3000 if not on it -->
+  <script>
+    if (window.location.port !== "3000") {
+      window.location.href = window.location.protocol + "//" + window.location.hostname + ":3000" + window.location.pathname;
+    }
+  </script>
+  <style>
+    body {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      background: url('https://files.catbox.moe/7enber.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: white;
+      font-family: Arial, sans-serif;
+      margin: 0;
+      overflow: auto;
+    }
+    .glow {
+      font-size: 2em;
+      color: #fff;
+      text-align: center;
+      animation: glowing 10s infinite;
+      margin-bottom: 20px;
+    }
+    @keyframes glowing {
+      0% { text-shadow: 0 0 10px #34eb34, 0 0 20px #34eb34; }
+      50% { text-shadow: 0 0 10px #27ae60, 0 0 20px #27ae60; }
+      100% { text-shadow: 0 0 10px #34eb34, 0 0 20px #34eb34; }
+    }
+    .info-box {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 400px;
+    }
+    .settings-container {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+      padding: 10px 20px;
+      border-radius: 10px;
+      background: rgba(0, 0, 0, 0.5);
+      width: 100%;
+      max-width: 600px;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .settings-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    .settings-table th,
+    .settings-table td {
+      padding: 8px;
+      text-align: left;
+      border-bottom: 1px solid #34eb34;
+    }
+    .settings-table th {
+      background-color: rgba(0, 0, 0, 0.7);
+      font-weight: bold;
+    }
+    .settings-table input[type='text'] {
+      width: 100%;
+      padding: 5px;
+      box-sizing: border-box;
+    }
+    .btn {
+      margin-top: 10px;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      cursor: pointer;
+      border-radius: 5px;
+      width: 100%;
+    }
+    .save-button {
+      background-color: #34eb34;
+      color: white;
+    }
+    .save-button:hover {
+      background-color: #27ae60;
+    }
+    .reset-button {
+      background-color: #e74c3c;
+      color: white;
+    }
+    .reset-button:hover {
+      background-color: #c0392b;
+    }
+    .developer {
+      margin-top: 20px;
+      font-size: 1.2em;
+      color: #aaa;
+      text-align: center;
+    }
+    .contact-info {
+      margin-top: 20px;
+      font-size: 1.2em;
+      text-align: center;
+    }
+    .contact-info a {
+      color: #34eb34;
+      text-decoration: none;
+      font-weight: bold;
+      margin: 0 10px;
+    }
+    .contact-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="glow">✅ DEPLOYMENT SUCCESSFUL,<br>WHATSBOT CONNECTED!</div>
+  <div class="info-box" id="Info">Loading...</div>
+  <div class="info-box" id="Uptime">Calculating uptime...</div>
+  <div class="info-box" id="Memory">Fetching memory usage...</div>
+  <div class="info-box" id="BotStatus">Bot Status: Checking...</div>
+  <div class="settings-container" id="Settings">
+    <h2>Bot Settings</h2>
+    <table class="settings-table" id="SettingsTable"></table>
+    <button class="btn save-button" onclick="saveSettings()">Save Changes</button>
+    <button class="btn reset-button" onclick="resetSettings()">Reset Settings</button>
+  </div>
+  <div class="contact-info">
+    Contact Septorch: 
+    <a href="https://wa.me/2349047943737" target="_blank">WhatsApp</a> 
+    or 
+    <a href="mailto:Septorch29@gmail.com" target="_blank">Email</a>
+  </div>
+  <div class="developer">Developed by <span style="color: #34eb34;">SEPTORCH</span></div>
+  <script>
+    const startTime = new Date();
+    function updateInfo() {
+      const now = new Date();
+      document.getElementById('Info').textContent = `Time: ${now.toLocaleTimeString()} | Date: ${now.toLocaleDateString()}`;
+      document.getElementById('Uptime').textContent = `Uptime: ${Math.floor((now - startTime) / 1000)}s`;
+      document.getElementById('Memory').textContent = `Memory Usage: ${Math.floor(Math.random() * 80) + 10}%`;
+    }
+    function fetchSettings() {
+      fetch('/api/settings')
+        .then(response => response.json())
+        .then(data => {
+          if (data.active !== undefined) {
+            document.getElementById('BotStatus').textContent = `Bot Status: ${data.active ? '🟢 Online' : '🔴 Offline'}`;
+          } else {
+            document.getElementById('BotStatus').textContent = `Bot Status: Not provided`;
+          }
+          const settingsTable = document.getElementById('SettingsTable');
+          settingsTable.innerHTML = '';
+          const headerRow = settingsTable.insertRow();
+          const keyHeader = headerRow.insertCell(0);
+          const valueHeader = headerRow.insertCell(1);
+          keyHeader.textContent = 'Setting';
+          valueHeader.textContent = 'Value';
+          keyHeader.style.fontWeight = 'bold';
+          valueHeader.style.fontWeight = 'bold';
+          for (const [key, value] of Object.entries(data)) {
+            if (key === 'active') continue;
+            const row = settingsTable.insertRow();
+            const keyCell = row.insertCell(0);
+            const valueCell = row.insertCell(1);
+            keyCell.textContent = key;
+            const input = document.createElement('input');
+            input.type = 'text';
+            input.value = value;
+            input.style.width = '100%';
+            input.style.padding = '5px';
+            input.style.boxSizing = 'border-box';
+            valueCell.appendChild(input);
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching settings:', error);
+          document.getElementById('BotStatus').textContent = 'Bot Status: 🔴 Failed to load settings';
+        });
+    }
+    function saveSettings() {
+      const settingsTable = document.getElementById('SettingsTable');
+      const settings = {};
+      for (let i = 1; i < settingsTable.rows.length; i++) {
+        const key = settingsTable.rows[i].cells[0].textContent;
+        const value = settingsTable.rows[i].cells[1].querySelector('input').value;
+        settings[key] = value;
+      }
+      fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(settings)
+      })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message || 'Settings updated!');
+        fetchSettings();
+      })
+      .catch(error => {
+        console.error('Error saving settings:', error);
+        alert('Failed to save settings.');
+      });
+    }
+    function resetSettings() {
+      if (!confirm('Are you sure you want to reset all settings?')) return;
+      fetch('/api/reset-settings', { method: 'POST' })
+      .then(response => response.json())
+      .then(data => {
+        alert(data.message || 'Settings reset to defaults!');
+        fetchSettings();
+      })
+      .catch(error => {
+        console.error('Error resetting settings:', error);
+        alert('Failed to reset settings.');
+      });
+    }
+    setInterval(updateInfo, 1000);
+    updateInfo();
+    fetchSettings();
+  </script>
+</body>
+</html>
